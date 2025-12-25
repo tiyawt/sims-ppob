@@ -19,7 +19,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #a81212;
 }
 
 body {
@@ -65,4 +65,11 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* App-specific helpers (since Tailwind isn't enabled) */
+.link-red {
+  color: #dc2626; /* Tailwind's red-600 */
+  font-weight: 600; /* semibold */
+  text-decoration: none;
 }
