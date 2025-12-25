@@ -3,14 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../schemas/registerSchema";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Register() {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -18,12 +21,20 @@ export default function Register() {
 
   const onSubmit = async (values) => {
     try {
-      const res = await axios.post((`${API_BASE_URL}/registration`), values, {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log("SUCCESS:", res.data);
+      const res = await axios.post(`${API_BASE_URL}/registration`, values);
+      toast.success(res.data?.message || "Registrasi berhasil");
+      navigate("/login", { replace: true });
     } catch (error) {
-      console.log("ERROR:", error.response?.data || error.message);
+      const message = error.response?.data?.message;
+
+      if (message === "Email sudah terdaftar") {
+        setError("email", {
+          type: "server",
+          message: "Email sudah terdaftar",
+        });
+      } else {
+        toast.error(message || "Registrasi gagal");
+      }
     }
   };
 
@@ -63,9 +74,8 @@ export default function Register() {
         {isSubmitting ? "Loading..." : "Register"}
       </button>
       <p>
-              Sudah punya akun? Login{" "}
-              <Link to="/login">di sini</Link>
-            </p>
+        Sudah punya akun? Login <Link to="/login">di sini</Link>
+      </p>
     </form>
   );
 }

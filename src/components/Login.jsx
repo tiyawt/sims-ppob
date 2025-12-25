@@ -3,9 +3,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/loginSchema";
 import axios from "axios";
-import Register from "./Register";
 import { Link, useNavigate, Navigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -42,6 +41,7 @@ export default function Login() {
 
       if (token) {
         localStorage.setItem("token", token);
+        toast.success("Login berhasil");
         navigate("/", { replace: true })
       }
     } catch (error) {
