@@ -6,7 +6,7 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { fetchBalance } from "../store/balanceSlice";
 import UserSummary from "../components/UserSummary";
-import bgSaldo from "../assets/Background Saldo.png";
+import BalanceCard from "../components/BalanceCard";
 import banner1 from "../assets/Banner 1.png";
 import banner2 from "../assets/Banner 2.png";
 import banner4 from "../assets/Banner 4.png";
@@ -32,7 +32,7 @@ export default function Home() {
     (s) => s.balance
   );
 
-  const [user, setUser] = useState(null);
+  
   const [showBalance, setShowBalance] = useState(false);
   const [banners, setBanners] = useState([]);
 
@@ -67,17 +67,6 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
     const fetchBanners = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/banner`, {
@@ -89,23 +78,11 @@ export default function Home() {
       }
     };
 
-    fetchProfile();
     fetchBanners();
     dispatch(fetchBalance());
   }, [dispatch]);
 
   const resolvedBanners = banners.length ? banners : fallbackBanners;
-
-  const balanceNumber =
-    typeof balanceState === "number"
-      ? balanceState
-      : balanceState?.balance ?? 0;
-
-  const displayBalance = isBalanceLoading
-    ? "Loading..."
-    : showBalance
-    ? balanceNumber.toLocaleString("id-ID")
-    : "●●●●●●●";
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -113,27 +90,16 @@ export default function Home() {
         {/* Top row - User info & Balance */}
         <div className="grid grid-cols-3 gap-6 mb-16">
           {/* Left - User Summary */}
-          <UserSummary user={user} />
+          <UserSummary />
 
           {/* Right - Balance Card */}
-          <div
-            className="flex flex-col col-span-2 gap-3 rounded-2xl p-8 text-white justify-center items-start bg-cover bg-bottom bg-no-repeat"
-            style={{ backgroundImage: `url(${bgSaldo})`}}
-          >
-            <p className="text-base opacity-90">Saldo anda</p>
-            <p className="text-xl font-bold tracking-tight">
-              Rp {displayBalance}
-            </p>
-            <button
-              type="button"
-              className="flex items-center gap-1 text-sm font-medium opacity-90 border-0 bg-transparent p-0 hover:opacity-100 transition-opacity cursor-pointer"
-              onClick={() => setShowBalance((p) => !p)}
-              style={{color:"white"}}
-            >
-              {showBalance ? "Tutup Saldo" : "Lihat Saldo"}
-              
-            </button>
-          </div>
+          <BalanceCard
+            balanceState={balanceState}
+            isLoading={isBalanceLoading}
+            showBalance={showBalance}
+            onToggle={() => setShowBalance((p) => !p)}
+            className="col-span-2"
+          />
         </div>
 
         {/* Services Grid */}
