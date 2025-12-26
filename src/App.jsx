@@ -9,6 +9,7 @@ import Layout from './components/Layout'
 import TopUp from './pages/TopUp'
 import Transaction from './pages/Transaction'
 import Profile from './pages/Profile'
+import ProfileEdit from './pages/ProfileEdit'
 
 function App() {
   return (
@@ -26,7 +27,9 @@ function App() {
             <Route path="/" element={<Home/>} />
             <Route path="/topup" element={<TopUp/>} />
             <Route path="/transaction" element={<Transaction/>} />
-            <Route path="/profile" element={<Profile/>} />            
+            <Route path="/profile" element={<Profile/>} /> 
+            <Route path="/profile/edit" element={<ProfileEdit/>} />
+            <Route path="*" element={<div className="p-4">Page Not Found</div>} />       
           </Route>
           
         </Route>

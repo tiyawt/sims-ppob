@@ -23,9 +23,6 @@ export default function UserSummary({ user: userProp, className = "" }) {
       } catch (error) {
         console.error("Error fetching profile:", error);
         setError(error.response?.status || "Error");
-        if (error.response?.status === 401) {
-          localStorage.removeItem("token");
-        }
       }
     };
     
