@@ -1,6 +1,3 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import bgSaldo from "../assets/Background Saldo.png";
 
 export default function BalanceCard({
@@ -34,8 +31,7 @@ export default function BalanceCard({
         onClick={onToggle}
       >
         {showBalance ? "Tutup Saldo" : "Lihat Saldo"}
-        <FontAwesomeIcon icon={showBalance ? faEyeSlash : faEye} size="sm" />
-      </button>
+        </button>
     </div>
   );
 }
