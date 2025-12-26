@@ -1,1 +1,12 @@
-@import "tailwindcss";
+/* Base layout tweaks for pages that use CSS modules/classes */
+
+.app-layout {
+	min-height: 100vh;
+	background: #ffffff;
+}
+
+.layout-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px 40px;
+}

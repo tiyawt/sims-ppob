@@ -1,57 +1,63 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import ProfilePhoto from "../assets/ProfilePhoto.png";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export default function UserSummary() {
-  const [user, setUser] = useState(null);
-  const [balance, setBalance] = useState(null);
-  const [showBalance, setShowBalance] = useState(false);
+export default function UserSummary({ user: userProp, className = "" }) {
+  const [fetchedUser, setFetchedUser] = useState(null);
+  const [error, setError] = useState(null);
+  const user = userProp || fetchedUser;
 
   useEffect(() => {
+    if (userProp) return;
+    
     const token = localStorage.getItem("token");
-
-    const fetchAll = async () => {
+    const fetchProfile = async () => {
       try {
-        const [profileRes, balanceRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/profile`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${API_BASE_URL}/balance`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        setUser(profileRes.data.data);
-        setBalance(balanceRes.data.data);
+        const res = await axios.get(`${API_BASE_URL}/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFetchedUser(res.data.data);
+        setError(null);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching profile:", error);
+        setError(error.response?.status || "Error");
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+        }
       }
     };
+    
+    fetchProfile();
+  }, [userProp]);
 
-    fetchAll();
-  }, []);
+  if (error) {
+    return (
+      <div className={className}>
+        <p className="text-red-500 text-sm font-semibold">
+          Error {error}: Token tidak valid
+        </p>
+      </div>
+    );
+  }
 
-  if (!user || !balance) return <p>Loading...</p>;
+  if (!user) return <p className="text-gray-500 text-sm">Loading...</p>;
 
   return (
-    <div>
-      <p>Selamat datang,</p>
-      <h1>
-        {user.first_name} {user.last_name}
-      </h1>
-
-      <p>Balance = {showBalance ? balance.balance : "••••••"}</p>
-
-      <p
-        style={{ cursor: "pointer" }}
-        onClick={() => setShowBalance((prev) => !prev)}
-      >
-        Lihat saldo{" "}
-        <FontAwesomeIcon icon={showBalance ? faEyeSlash : faEye} />
-      </p>
+    <div className={"flex flex-col"}>
+      <img
+        src={user.profile_image || ProfilePhoto}
+        alt="Avatar"
+        className="w-[60px] h-[60px] rounded-full object-cover"
+        onError={(e) => (e.currentTarget.src = ProfilePhoto)}
+      />
+      <div>
+        <p className="text-gray-900 text-base">Selamat datang,</p>
+        <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+          {user.first_name} {user.last_name}
+        </h1>
+      </div>
     </div>
   );
 }
