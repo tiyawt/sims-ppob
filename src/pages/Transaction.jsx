@@ -16,27 +16,41 @@ export default function Transaction() {
   const [showBalance, setShowBalance] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const limit = 5;
 
-  const fetchTransactions = useCallback(async () => {
+  const fetchTransactions = useCallback(async (currentOffset = 0) => {
     setIsLoadingTransactions(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${API_BASE_URL}/transaction/history`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `${API_BASE_URL}/transaction/history?offset=${currentOffset}&limit=${limit}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = res.data?.data?.records || res.data?.data || [];
-      setTransactions(Array.isArray(data) ? data : []);
+      const newTransactions = Array.isArray(data) ? data : [];
+      
+      if (currentOffset === 0) {
+        setTransactions(newTransactions);
+      } else {
+        setTransactions((prev) => [...prev, ...newTransactions]);
+      }
+      setOffset(currentOffset + limit);
     } catch (error) {
       console.error("Error fetching transactions:", error);
-      setTransactions([]);
+      if (currentOffset === 0) {
+        setTransactions([]);
+      }
     } finally {
       setIsLoadingTransactions(false);
     }
-  }, []);
+  }, [limit]);
 
   useEffect(() => {
     dispatch(fetchBalance());
-    fetchTransactions();
+    fetchTransactions(0);
   }, [dispatch, fetchTransactions]);
 
   const formatDate = (dateString) => {
@@ -44,13 +58,12 @@ export default function Transaction() {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "Tanggal tidak valid";
-      return date.toLocaleDateString("id-ID", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      const day = date.getDate();
+      const month = date.toLocaleDateString("id-ID", { month: "long" });
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${day} ${month} ${year}     ${hours}:${minutes} WIB`;
     } catch {
       return "Tanggal tidak tersedia";
     }
@@ -75,10 +88,8 @@ export default function Transaction() {
         </div>
 
         {/* Transaction History */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-2xl font-bold text-gray-900">Semua Transaksi</h2>
-          </div>
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Semua Transaksi</h2>
 
           {isLoadingTransactions ? (
             <div className="p-8 text-center text-gray-500">
@@ -89,36 +100,33 @@ export default function Transaction() {
               Belum ada transaksi
             </div>
           ) : (
-            <div className="divide-y divide-gray-200">
+            <div className="space-y-3">
               {transactions.map((tx, idx) => (
                 <div
                   key={tx.invoice_number || idx}
-                  className="px-6 py-4 hover:bg-gray-50 transition-colors"
+                  className="bg-white rounded-lg border border-gray-200 px-6 py-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">
-                        {tx.description || tx.service_name || "Transaksi"}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {formatDate(tx.created_on || tx.transaction_date)}
-                      </p>
-                    </div>
-                    <div className="text-right ml-4">
                       <p
-                        className={`font-bold ${
+                        className={`text-xl font-bold mb-1 ${
                           tx.transaction_type === "TOPUP"
                             ? "text-green-600"
                             : "text-red-600"
                         }`}
                       >
-                        {tx.transaction_type === "TOPUP" ? "+" : "-"}
-                        Rp{(tx.total_amount || tx.amount || 0).toLocaleString(
+                        {tx.transaction_type === "TOPUP" ? "+" : "-"} Rp.
+                        {(tx.total_amount || tx.amount || 0).toLocaleString(
                           "id-ID"
                         )}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {tx.status || "Berhasil"}
+                      <p className="text-xs text-gray-500">
+                        {formatDate(tx.created_on || tx.transaction_date)}
+                      </p>
+                    </div>
+                    <div className="text-right ml-4">
+                      <p className="text-sm text-gray-900">
+                        {tx.description || tx.service_name || (tx.transaction_type === "TOPUP" ? "Top Up Saldo" : "Transaksi")}
                       </p>
                     </div>
                   </div>
@@ -127,6 +135,18 @@ export default function Transaction() {
             </div>
           )}
         </div>
+
+        {/* Show More Button */}
+        {transactions.length > 0 && !isLoadingTransactions && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => fetchTransactions(offset)}
+              className="text-red-500 font-semibold hover:text-red-600 transition-colors"
+            >
+              Show more
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

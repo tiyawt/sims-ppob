@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -28,6 +29,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { value: balanceState, isLoading: isBalanceLoading } = useSelector(
     (s) => s.balance
   );
@@ -36,7 +38,8 @@ export default function Home() {
   const [showBalance, setShowBalance] = useState(false);
   const [banners, setBanners] = useState([]);
 
-  const services = useMemo(
+  const [services, setServices] = useState([]);
+  const defaultServices = useMemo(
     () => [
       { title: "PBB", icon: pbbIcon },
       { title: "Listrik", icon: listrikIcon },
@@ -51,6 +54,23 @@ export default function Home() {
       { title: "Zakat", icon: zakatIcon },
       { title: "Paket Data", icon: paketDataIcon },
     ],
+    []
+  );
+  const serviceIconMap = useMemo(
+    () => ({
+      PBB: pbbIcon,
+      Listrik: listrikIcon,
+      Pulsa: pulsaIcon,
+      PDAM: pdamIcon,
+      PGN: pgnIcon,
+      "TV Langganan": televisiIcon,
+      Musik: musikIcon,
+      "Voucher Game": voucherGameIcon,
+      "Voucher Makanan": voucherMakananIcon,
+      Kurban: kurbanIcon,
+      Zakat: zakatIcon,
+      "Paket Data": paketDataIcon,
+    }),
     []
   );
 
@@ -78,11 +98,41 @@ export default function Home() {
       }
     };
 
+    const fetchServices = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/services`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const apiServices = Array.isArray(res.data?.data) ? res.data.data : [];
+        const normalized = apiServices
+          .map((s) => {
+            const title = (s.service_name || s.name || s.title || "").trim();
+            const icon = s.service_icon || s.icon || serviceIconMap[title] || null;
+            const service_code = s.service_code || "";
+            const tariff = s.service_tariff || 0;
+            return title && service_code
+              ? { title, icon, service_code, tariff }
+              : null;
+          })
+          .filter(Boolean);
+        setServices(normalized.length ? normalized : defaultServices);
+      } catch (err) {
+        console.log(err);
+        setServices(defaultServices);
+      }
+    };
+
     fetchBanners();
+    fetchServices();
     dispatch(fetchBalance());
-  }, [dispatch]);
+  }, [dispatch, defaultServices, serviceIconMap]);
+
+  const handleServiceClick = (service) => {
+    navigate("/payment", { state: { service } });
+  };
 
   const resolvedBanners = banners.length ? banners : fallbackBanners;
+  const resolvedServices = services.length ? services : defaultServices;
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -105,17 +155,24 @@ export default function Home() {
         {/* Services Grid */}
         <div className="mb-12">
           <div className="grid grid-cols-12 gap-6">
-            {services.map((item) => (
+            {resolvedServices.map((item) => (
               <div
                 key={item.title}
+                onClick={() => handleServiceClick(item)}
                 className="flex flex-col items-center text-center cursor-pointer hover:opacity-80 transition-opacity"
               >
                 <div className="w-16 h-16 flex items-center justify-center mb-2">
-                  <img
-                    src={item.icon}
-                    alt={item.title}
-                    className="w-full h-full object-contain"
-                  />
+                  {item.icon ? (
+                    <img
+                      src={item.icon}
+                      alt={item.title}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center rounded bg-gray-100 text-xs text-gray-600">
+                      {item.title}
+                    </div>
+                  )}
                 </div>
                 <p className="text-xs text-gray-700 leading-tight max-w-[70px]">
                   {item.title}

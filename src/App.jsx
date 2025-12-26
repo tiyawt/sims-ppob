@@ -8,6 +8,7 @@ import Home from './pages/Home'
 import Layout from './components/Layout'
 import TopUp from './pages/TopUp'
 import Transaction from './pages/Transaction'
+import Payment from './pages/Payment'
 import Profile from './pages/Profile'
 import ProfileEdit from './pages/ProfileEdit'
 
@@ -26,6 +27,7 @@ function App() {
           <Route element={<Layout/>}>
             <Route path="/" element={<Home/>} />
             <Route path="/topup" element={<TopUp/>} />
+            <Route path="/payment" element={<Payment/>} />
             <Route path="/transaction" element={<Transaction/>} />
             <Route path="/profile" element={<Profile/>} /> 
             <Route path="/profile/edit" element={<ProfileEdit/>} />

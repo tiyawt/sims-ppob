@@ -70,8 +70,10 @@ export default function ProfileEdit() {
       });
 
       const newImage = res.data?.data?.profile_image;
-      setUser((prev) => ({ ...prev, profile_image: newImage }));
-      toast.success("Foto profil berhasil diperbarui");
+      if (newImage) {
+        setUser((prev) => ({ ...prev, profile_image: newImage }));
+        toast.success("Foto profil berhasil diperbarui");
+      }
     } catch (error) {
       console.error("Error uploading image", error);
       toast.error(error.response?.data?.message || "Gagal mengunggah foto");
