@@ -17,7 +17,7 @@ export default function Layout() {
             <img src={Logo} alt="Logo" className="w-6 h-6" />
             <span className="font-semibold text-gray-900 text-base">SIMS PPOB</span>
           </NavLink>
-          <nav className="flex justify-between items-center gap-12 text-sm">
+          <nav className="flex justify-between items-center lg:gap-12 gap-6">
             <NavLink to="/topup" className={navClass}>
               Top Up
             </NavLink>

@@ -46,7 +46,7 @@ export default function UserSummary({ user: userProp, className = "" }) {
       <img
         src={user.profile_image || ProfilePhoto}
         alt="Avatar"
-        className="w-[60px] h-[60px] rounded-full object-cover"
+        className="w-[60px] h-[60px] rounded-full object-cover mb-4"
         onError={(e) => (e.currentTarget.src = ProfilePhoto)}
       />
       <div>

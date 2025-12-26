@@ -136,9 +136,9 @@ export default function Home() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] px-4 py-12">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 md:py-12">
         {/* Top row - User info & Balance */}
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-16">
           {/* Left - User Summary */}
           <UserSummary />
 
@@ -148,20 +148,20 @@ export default function Home() {
             isLoading={isBalanceLoading}
             showBalance={showBalance}
             onToggle={() => setShowBalance((p) => !p)}
-            className="col-span-2"
+            className="md:col-span-2"
           />
         </div>
 
         {/* Services Grid */}
-        <div className="mb-12">
-          <div className="grid grid-cols-12 gap-6">
+        <div className="mb-8 md:mb-12">
+          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-4 md:gap-6">
             {resolvedServices.map((item) => (
               <div
                 key={item.title}
                 onClick={() => handleServiceClick(item)}
                 className="flex flex-col items-center text-center cursor-pointer hover:opacity-80 transition-opacity"
               >
-                <div className="w-16 h-16 flex items-center justify-center mb-2">
+                <div className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center mb-1 md:mb-2">
                   {item.icon ? (
                     <img
                       src={item.icon}
@@ -174,7 +174,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-700 leading-tight max-w-[70px]">
+                <p className="text-[10px] md:text-xs text-gray-700 leading-tight max-w-[60px] md:max-w-[70px]">
                   {item.title}
                 </p>
               </div>
@@ -184,15 +184,20 @@ export default function Home() {
 
         {/* Promo Banners Section */}
         <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-5">
+          <h2 className="text-sm md:text-base font-semibold text-gray-900 mb-3 md:mb-5">
             Temukan promo menarik
           </h2>
 
           <Swiper
             modules={[Autoplay]}
             autoplay={{ delay: 4000, disableOnInteraction: false }}
-            slidesPerView={4.5}
-            spaceBetween={20}
+            slidesPerView={1.5}
+            spaceBetween={12}
+            breakpoints={{
+              640: { slidesPerView: 2.5, spaceBetween: 16 },
+              768: { slidesPerView: 3.5, spaceBetween: 20 },
+              1024: { slidesPerView: 4.5, spaceBetween: 20 },
+            }}
             loop={true}
             className="banner-swiper"
           >

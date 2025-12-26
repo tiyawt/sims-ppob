@@ -71,9 +71,9 @@ export default function Transaction() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] px-4 py-12">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 md:py-12">
         {/* Top row - User info & Balance */}
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-16">
           {/* Left - User Summary */}
           <UserSummary />
 
@@ -83,33 +83,33 @@ export default function Transaction() {
             isLoading={isBalanceLoading}
             showBalance={showBalance}
             onToggle={() => setShowBalance((p) => !p)}
-            className="col-span-2"
+            className="md:col-span-2"
           />
         </div>
 
         {/* Transaction History */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Semua Transaksi</h2>
+          <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">Semua Transaksi</h2>
 
           {isLoadingTransactions ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-6 md:p-8 text-center text-gray-500 text-sm md:text-base">
               Memuat transaksi...
             </div>
           ) : transactions.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-6 md:p-8 text-center text-gray-500 text-sm md:text-base">
               Belum ada transaksi
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2 md:space-y-3">
               {transactions.map((tx, idx) => (
                 <div
                   key={tx.invoice_number || idx}
-                  className="bg-white rounded-lg border border-gray-200 px-6 py-4 hover:shadow-md transition-shadow"
+                  className="bg-white rounded-lg border border-gray-200 px-4 md:px-6 py-3 md:py-4 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
                       <p
-                        className={`text-xl font-bold mb-1 ${
+                        className={`text-base md:text-xl font-bold mb-0.5 md:mb-1 ${
                           tx.transaction_type === "TOPUP"
                             ? "text-green-600"
                             : "text-red-600"
@@ -124,8 +124,8 @@ export default function Transaction() {
                         {formatDate(tx.created_on || tx.transaction_date)}
                       </p>
                     </div>
-                    <div className="text-right ml-4">
-                      <p className="text-sm text-gray-900">
+                    <div className="text-right ml-2 md:ml-4 flex-shrink-0">
+                      <p className="text-xs md:text-sm text-gray-900 break-words">
                         {tx.description || tx.service_name || (tx.transaction_type === "TOPUP" ? "Top Up Saldo" : "Transaksi")}
                       </p>
                     </div>
@@ -138,10 +138,10 @@ export default function Transaction() {
 
         {/* Show More Button */}
         {transactions.length > 0 && !isLoadingTransactions && (
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-6 md:mt-8">
             <button
               onClick={() => fetchTransactions(offset)}
-              className="text-red-500 font-semibold hover:text-red-600 transition-colors"
+              className="text-red-500 text-sm md:text-base font-semibold hover:text-red-600 transition-colors"
             >
               Show more
             </button>

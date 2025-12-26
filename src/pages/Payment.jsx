@@ -92,43 +92,43 @@ export default function Payment() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] px-4 py-12">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 md:py-12">
         {/* Top row - User info & Balance */}
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-16">
           <UserSummary />
           <BalanceCard
             balanceState={balanceState}
             isLoading={isBalanceLoading}
             showBalance={showBalance}
             onToggle={() => setShowBalance((p) => !p)}
-            className="col-span-2"
+            className="md:col-span-2"
           />
         </div>
 
         {/* Payment Form */}
         <div className="max-w-full">
-          <h2 className="text-base lg:text-lg font-normal text-gray-900 mb-6">PemBayaran</h2>
+          <h2 className="text-sm md:text-base lg:text-lg font-normal text-gray-900 mb-4 md:mb-6">PemBayaran</h2>
 
           {/* Service Display */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
             {service.icon ? (
-              <img src={service.icon} alt={service.title} className="w-8 h-8 object-contain" />
+              <img src={service.icon} alt={service.title} className="w-6 h-6 md:w-8 md:h-8 object-contain" />
             ) : (
-              <FontAwesomeIcon icon={faWallet} className="text-gray-500 text-2xl" />
+              <FontAwesomeIcon icon={faWallet} className="text-gray-500 text-xl md:text-2xl" />
             )}
-            <span className="text-sm lg:text-base font-medium text-gray-900">{service.title}</span>
+            <span className="text-xs md:text-sm lg:text-base font-medium text-gray-900">{service.title}</span>
           </div>
 
           {/* Amount Input */}
-          <div className="relative mb-6">
-            <span className="absolute inset-y-0 left-4 flex items-center text-gray-500 text-sm">
+          <div className="relative mb-4 md:mb-6">
+            <span className="absolute inset-y-0 left-3 md:left-4 flex items-center text-gray-500 text-xs md:text-sm">
               <FontAwesomeIcon icon={faWallet} />
             </span>
             <input
               type="text"
               value={amount.toLocaleString("id-ID")}
               readOnly
-              className="w-full rounded-md border border-gray-300 pl-12 pr-4 py-3 text-sm text-gray-900 bg-gray-100 cursor-default pointer-events-none"
+              className="w-full rounded-md border border-gray-300 pl-10 md:pl-12 pr-3 md:pr-4 py-2 md:py-3 text-xs md:text-sm text-gray-900 bg-gray-100 cursor-default pointer-events-none"
             />
           </div>
 
@@ -136,7 +136,7 @@ export default function Payment() {
           <button
             onClick={handlePaymentClick}
             disabled={isProcessing || !amount || parseInt(amount) <= 0}
-            className={`w-full rounded-md bg-red-500 text-white font-semibold py-3 transition-colors ${
+            className={`w-full rounded-md bg-red-500 text-white font-semibold py-2 md:py-3 text-sm md:text-base transition-colors ${
               isProcessing || !amount || parseInt(amount) <= 0
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-red-600"

@@ -91,9 +91,9 @@ export default function TopUp() {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="mx-auto max-w-[1200px] px-4 py-12">
+      <div className="mx-auto max-w-[1200px] px-4 py-6 md:py-12">
         {/* Top row - User info & Balance */}
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-16">
           {/* Left - User Summary */}
           <UserSummary />
 
@@ -103,20 +103,20 @@ export default function TopUp() {
             isLoading={isBalanceLoading}
             showBalance={showBalance}
             onToggle={() => setShowBalance((p) => !p)}
-            className="col-span-2"
+            className="md:col-span-2"
           />
         </div>
 
         {/* Main content - Form & Info */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <h2 className="text-sm md:text-base text-gray-900">
             Silahkan masukan
         </h2>
-        <h3 className="text-xl font-bold text-gray-900 mb-6">
+        <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-8 md:mb-16">
             Nominal Top Up
         </h3>
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {/* Left - Form Section */}
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             {/* Input field */}
             <div className="mb-4 space-y-2">
               <div className="relative">
@@ -132,11 +132,11 @@ export default function TopUp() {
                       : ""
                   }
                   onChange={handleInputChange}
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  className="w-full pl-10 pr-3 py-2 md:py-3 border border-gray-300 rounded-lg text-gray-900 text-sm md:text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
               {nominalInput && !isInputValid && (
-                <p className="text-sm text-red-600">
+                <p className="text-xs md:text-sm text-red-600">
                   Nominal minimal Rp10.000 dan maksimal Rp1.000.000
                 </p>
               )}
@@ -150,7 +150,7 @@ export default function TopUp() {
                   setConfirmOpen(true);
                 }
               }}
-              className={`w-full py-3 px-3 rounded-lg font-bold text-white transition-all ${
+              className={`w-full py-2 md:py-3 px-3 rounded-lg font-bold text-white text-sm md:text-base transition-all ${
                 isInputValid && !isSubmitting
                   ? "bg-red-500 hover:bg-red-600 cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed"
@@ -163,12 +163,12 @@ export default function TopUp() {
           {/* Right - Info Section */}
           <div>
               {/* Nominal options */}
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 mb-4">
               {nominalOptions.map((nominal) => (
                 <button
                   key={nominal}
                   onClick={() => handleNominalClick(nominal)}
-                  className={`py-3.5 px-3 rounded-lg font-semibold text-sm transition-all ${
+                  className={`py-2 md:py-3.5 px-2 md:px-3 rounded-lg font-semibold text-xs md:text-sm transition-all ${
                     selectedNominal === nominal
                       ? "bg-red-500 text-white"
                       : "bg-white border border-gray-300 text-gray-900 hover:border-red-500"

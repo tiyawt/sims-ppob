@@ -106,13 +106,14 @@ export default function Profile() {
 
                     <div className="space-y-3 pt-2">
                         <button
-                            className="w-full rounded-md bg-red-500 hover:bg-red-600 text-white font-semibold py-3 transition-colors"
+                            
+                            className="w-full rounded-md border border-red-500 text-red-600 font-semibold py-3 hover:bg-red-50 transition-colors mb-4"
                             onClick={() => navigate("/profile/edit")}
                         >
                             Edit Profil
                         </button>
                         <button
-                            className="w-full rounded-md border border-red-500 text-red-600 font-semibold py-3 hover:bg-red-50 transition-colors"
+                            className="w-full rounded-md bg-red-500 hover:bg-red-600 text-white font-semibold py-3 transition-colors"
                             onClick={handleLogout}
                         >
                             Logout
